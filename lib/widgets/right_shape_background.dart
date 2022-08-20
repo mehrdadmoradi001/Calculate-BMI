@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 
-class RightShape extends StatelessWidget {
-  const RightShape({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
+  Widget RightShape({required double? width}) {    //
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [Container(
-        width: 200.0,
+        width: width,
         height: 40.0,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
@@ -20,4 +16,3 @@ class RightShape extends StatelessWidget {
       ),],
     );
   }
-}

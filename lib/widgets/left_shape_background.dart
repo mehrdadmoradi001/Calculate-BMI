@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class LeftShape extends StatelessWidget {
-  final double? width;
-  const LeftShape({Key? key, this.width}) : super(key: key);
+  final double width;
+  const LeftShape({Key? key, this.width = 0}) : super(key: key);    //
 
   @override
   Widget build(BuildContext context) {
