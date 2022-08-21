@@ -1,3 +1,4 @@
+import 'package:calculate_bmi/constants/constants.dart';
 import 'package:flutter/material.dart';
 
   Widget RightShape({required double? width}) {    //
@@ -11,7 +12,7 @@ import 'package:flutter/material.dart';
             topLeft: Radius.circular(20),
             bottomLeft: Radius.circular(20),
           ),
-          color: Colors.red,
+          color: orangeBackground,
         ),
       ),],
     );
