@@ -9,15 +9,45 @@ class GestureDetectorPage extends StatefulWidget {
 }
 
 class _GestureDetectorPageState extends State<GestureDetectorPage> {
+  int counter = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: orangeBackground,
       body: SafeArea(
         child: Center(
-          child: Text(
-            '1',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 100,
+              ),
+              Text(
+                '$counter',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    counter = counter + 1;
+                  });
+                },
+                child: Text('click'),
+              ),
+              SizedBox(height: 20,),
+              InkWell(
+                onTap: (){
+                  setState(() {
+                    counter = counter - 1;  //
+                  });
+                },
+                child: Container(
+                  width: 200,
+                  height: 200,
+                  color: Colors.white.withOpacity(0.7),  //
+                ),
+              )
+            ],
           ),
         ),
       ),
