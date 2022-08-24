@@ -12,23 +12,30 @@ class BMIMain extends StatefulWidget {
 }
 
 class _BMIMainState extends State<BMIMain> {
-   final  weightController = TextEditingController();
-   final heightController = TextEditingController();
+  final weightController = TextEditingController();
+  final heightController = TextEditingController();
 
+  double resultBMI = 0;
+  String resultText = '';
 
-  Widget _getTextField(String stringHint,TextEditingController Controller)  {
+  double widthGood = 100;
+  double widthBad = 100;
 
+  final keyBoard = TextInputType.number;
+
+  Widget _getTextField(String stringHint, TextEditingController Controller) {
     return Container(
       width: 100,
       child: TextField(
-        controller: Controller,    //
+        controller: Controller,
+        //
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 30,
           fontWeight: FontWeight.bold,
           color: orangeBackground,
         ),
-        keyboardType: TextInputType.number,
+        keyboardType: keyBoard,
         //
         decoration: InputDecoration(
           border: InputBorder.none,
@@ -60,15 +67,39 @@ class _BMIMainState extends State<BMIMain> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _getTextField('وزن',weightController),
-                _getTextField('قد',heightController),
+                _getTextField('وزن', weightController),
+                _getTextField('قد', heightController),
               ],
             ),
             SizedBox(height: 20),
             InkWell(
               onTap: () {
-                print(weightController.text);
-                print(heightController.text);
+                final weight = double.parse(weightController.text);
+                final height = double.parse(heightController.text);
+
+                setState(
+                  () {
+                    resultBMI = weight /
+                        (height *
+                            height); // وزن تقسیم بر قد به توان 2 که دوبار در خودش ضرب میکنیم
+                    if (resultBMI > 25) {
+                      resultText = 'شما اضافه وزن دارید';
+                      widthBad = 270;
+                      widthGood = 50;
+                    } else if (resultBMI >= 18.5 && resultBMI <= 25) {
+                      resultText = 'وزن شما نرمال است';
+                      widthGood = 270;
+                      widthBad = 50;
+                    } else {
+                      resultText = 'نیاز به افزایش وزن دارید';
+                      widthBad = 40;
+                      widthGood = 40;
+                    }
+
+                    FocusManager.instance.primaryFocus?.unfocus();
+
+                  },
+                );
               },
               child: Text(
                 '! محاسبه کن',
@@ -77,29 +108,22 @@ class _BMIMainState extends State<BMIMain> {
             ),
             SizedBox(height: 20),
             Text(
-              '31',
+              '${resultBMI.toStringAsFixed(2)}',
               style: TextStyle(fontSize: 64, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
             Text(
-              'شما اضافه وزن دارید',
+              '$resultText',
               style: TextStyle(
                   fontSize: 24, fontWeight: FontWeight.bold, color: Colors.red),
             ),
             SizedBox(height: 40),
             LeftShape(
-              width: 50,
+              width: widthGood,
             ),
-            SizedBox(height: 10),
-            LeftShape(
-              width: 150,
-            ),
-            SizedBox(height: 10),
-            RightShape(width: 200),
-            SizedBox(height: 10),
-            RightShape(width: 100),
-            SizedBox(height: 10),
-            RightShape(width: 50),
+            SizedBox(height: 15),
+            RightShape(width: widthBad),
+            SizedBox(height: 100),
             TextButton(
               onPressed: () {
                 Navigator.of(context).push(

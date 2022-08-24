@@ -1,3 +1,4 @@
+import 'package:calculate_bmi/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class LeftShape extends StatelessWidget {
@@ -20,6 +21,8 @@ class LeftShape extends StatelessWidget {
             color: Colors.green,
           ),
         ),
+        SizedBox(width: 8),
+        Text('شاخص مثبت',style: TextStyle(color: Colors.green),),
       ],
     );
   }

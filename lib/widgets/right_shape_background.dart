@@ -1,10 +1,14 @@
 import 'package:calculate_bmi/constants/constants.dart';
 import 'package:flutter/material.dart';
 
-  Widget RightShape({required double? width}) {    //
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [Container(
+Widget RightShape({required double? width}) {
+  //
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.end,
+    children: [
+      Text('شاخص منفی',style: TextStyle(color: orangeBackground),),
+      SizedBox(width: 8),
+      Container(
         width: width,
         height: 40.0,
         decoration: BoxDecoration(
@@ -14,6 +18,7 @@ import 'package:flutter/material.dart';
           ),
           color: orangeBackground,
         ),
-      ),],
-    );
-  }
+      ),
+    ],
+  );
+}
