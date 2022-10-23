@@ -1,8 +1,12 @@
+import 'dart:ffi';
+
 import 'package:calculate_bmi/constants/constants.dart';
 import 'package:calculate_bmi/pages/gesture_detector_page.dart';
 import 'package:calculate_bmi/widgets/left_shape_background.dart';
 import 'package:calculate_bmi/widgets/right_shape_background.dart';
+import 'package:calculate_bmi/widgets/sf_radial_gauge.dart';
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class BMIMain extends StatefulWidget {
   const BMIMain({Key? key}) : super(key: key);
@@ -12,6 +16,8 @@ class BMIMain extends StatefulWidget {
 }
 
 class _BMIMainState extends State<BMIMain> {
+  var images = '';
+
   final weightController = TextEditingController();
   final heightController = TextEditingController();
 
@@ -20,6 +26,8 @@ class _BMIMainState extends State<BMIMain> {
 
   double widthGood = 100;
   double widthBad = 100;
+
+  double markerPointer = 0;
 
   final keyBoard = TextInputType.number;
 
@@ -51,6 +59,7 @@ class _BMIMainState extends State<BMIMain> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundMain,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
@@ -61,82 +70,103 @@ class _BMIMainState extends State<BMIMain> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('images/$images.png'), fit: BoxFit.fill,opacity: 0.3),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
               children: [
-                _getTextField('وزن', weightController),
-                _getTextField('قد', heightController),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _getTextField('وزن', weightController),
+                    _getTextField('قد', heightController),
+                  ],
+                ),
+                SizedBox(height: 20),
+                InkWell(
+                  onTap: () {
+                    final weight = double.parse(weightController.text);
+                    final height = double.parse(heightController.text);
+
+                    setState(
+                      () {
+                        resultBMI = weight /
+                            (height *
+                                height); // وزن تقسیم بر قد به توان 2 که دوبار در خودش ضرب میکنیم
+                        if (resultBMI > 25) {
+                          resultText = 'شما اضافه وزن دارید';
+                          widthBad = 270;
+                          widthGood = 50;
+                          markerPointer = 85;
+                          images = '3';
+                        } else if (resultBMI >= 18.5 && resultBMI <= 25) {
+                          resultText = 'وزن شما نرمال است';
+                          widthGood = 270;
+                          widthBad = 50;
+                          markerPointer = 50;
+                          images = '2';
+                        } else {
+                          resultText = 'نیاز به افزایش وزن دارید';
+                          widthBad = 40;
+                          widthGood = 40;
+                          markerPointer = 10;
+                          images = '1';
+                        }
+
+                        //close the keyboard when the result is clicked.
+                        FocusManager.instance.primaryFocus?.unfocus();
+                      },
+                    );
+                  },
+                  child: Text(
+                    '! محاسبه کن',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Text(
+                  '${resultBMI.toStringAsFixed(2)}',
+                  style: TextStyle(fontSize: 64, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  '$resultText',
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red),
+                ),
+                SizedBox(height: 20),
+                LeftShape(
+                  width: widthGood,
+                ),
+                SizedBox(height: 15),
+                RightShape(width: widthBad),
+                Container(
+                  height: 310,
+                  width: 310,
+                  child: SFRadialGauge(markerPointer),
+                ),
+                SizedBox(height: 100),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) {
+                          return GestureDetectorPage();
+                        },
+                      ),
+                    );
+                  },
+                  child: Text('Go to GestureDetector'),
+                )
               ],
             ),
-            SizedBox(height: 20),
-            InkWell(
-              onTap: () {
-                final weight = double.parse(weightController.text);
-                final height = double.parse(heightController.text);
-
-                setState(
-                  () {
-                    resultBMI = weight /
-                        (height *
-                            height); // وزن تقسیم بر قد به توان 2 که دوبار در خودش ضرب میکنیم
-                    if (resultBMI > 25) {
-                      resultText = 'شما اضافه وزن دارید';
-                      widthBad = 270;
-                      widthGood = 50;
-                    } else if (resultBMI >= 18.5 && resultBMI <= 25) {
-                      resultText = 'وزن شما نرمال است';
-                      widthGood = 270;
-                      widthBad = 50;
-                    } else {
-                      resultText = 'نیاز به افزایش وزن دارید';
-                      widthBad = 40;
-                      widthGood = 40;
-                    }
-
-                    FocusManager.instance.primaryFocus?.unfocus();
-
-                  },
-                );
-              },
-              child: Text(
-                '! محاسبه کن',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
-            SizedBox(height: 20),
-            Text(
-              '${resultBMI.toStringAsFixed(2)}',
-              style: TextStyle(fontSize: 64, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-            Text(
-              '$resultText',
-              style: TextStyle(
-                  fontSize: 24, fontWeight: FontWeight.bold, color: Colors.red),
-            ),
-            SizedBox(height: 40),
-            LeftShape(
-              width: widthGood,
-            ),
-            SizedBox(height: 15),
-            RightShape(width: widthBad),
-            SizedBox(height: 100),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) {
-                      return GestureDetectorPage();
-                    },
-                  ),
-                );
-              },
-              child: Text('Go to GestureDetector'),
-            ),
-          ],
+          ),
         ),
       ),
     );
